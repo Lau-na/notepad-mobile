@@ -1,51 +1,64 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from 'expo-router';
-import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { Stack } from "expo-router";
+import { useColorScheme } from "react-native";
+import { MD3LightTheme as PaperTheme, Provider as PaperProvider } from "react-native-paper";
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: "(tabs)",
 };
 
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
-  });
-
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  return (
-    <>
-      {/* Keep the splash screen open until the assets have loaded. In the future, we should just support async font loading with a native version of font-display. */}
-      {!loaded && <SplashScreen />}
-      {loaded && <RootLayoutNav />}
-    </>
-  );
-}
-
-function RootLayoutNav() {
+export default function Layout() {
   const colorScheme = useColorScheme();
-
   return (
     <>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ThemeProvider>
+      <PaperProvider
+        theme={{
+          ...PaperTheme,
+          colors: {
+            ...PaperTheme.colors,
+            primary: "#75d1ff",
+            surfaceVariant: "#e8f4fa",
+            // onPrimary: "red",
+            // primaryContainer: "red",
+            // onPrimaryContainer: "red",
+            // secondary: "red",
+            // onSecondary: "red",
+            // secondaryContainer: "red",
+            // onSecondaryContainer: "red",
+            // tertiary: "red",
+            // onTertiary: "red",
+            // tertiaryContainer: "red",
+            // onTertiaryContainer: "red",
+            // error: "red",
+            // onError: "red",
+            // errorContainer: "red",
+            // onErrorContainer: "red",
+            // background: "red",
+            // onBackground: "red",
+            // surface: "red",
+            // onSurface: "red",
+            // onSurfaceVariant: "red",
+            // outline: "red",
+            // outlineVariant: "red",
+            // shadow: "red",
+            // scrim: "red",
+            // inverseSurface: "red",
+            // inverseOnSurface: "red",
+            // inversePrimary: "red",
+            // surfaceDisabled: "red",
+            // onSurfaceDisabled: "red",
+            // backdrop: "red",
+          },
+        }}
+      >
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="note" options={{ title: "Anotação" }} />
+            <Stack.Screen name="category" options={{ title: "Categoria" }} />
+          </Stack>
+        </ThemeProvider>
+      </PaperProvider>
     </>
   );
 }

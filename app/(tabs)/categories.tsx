@@ -10,36 +10,36 @@ import {
   ToastAndroid,
 } from "react-native";
 
-import { Note } from "../../types/note";
-import service from "../../services/notes";
+import { Category } from "../../types/category";
+import service from "../../services/categories";
 import Icon from "../../components/Icon";
 import useToggleState from "../../hooks/useToggleState";
 import { usePathname, useRouter } from "expo-router";
 
-export default function Notes() {
+export default function Categories() {
   const pathname = usePathname();
   const router = useRouter();
   const [refreshing, toggleRefreshing] = useToggleState();
-  const [notes, setNotes] = useState<Note[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [deletingId, setDeletingId] = useState<string>();
 
   const load = async () => {
     toggleRefreshing();
     const response = await service.list();
-    setNotes(response.data);
+    setCategories(response.data);
     toggleRefreshing();
   };
 
-  const remove = async ({ id, title }: Note) => {
+  const remove = async ({ id, description }: Category) => {
     setDeletingId(id);
     await service.delete(id);
     setDeletingId(id);
     await load();
-    ToastAndroid.show(`Anotação ${title} removida`, ToastAndroid.SHORT);
+    ToastAndroid.show(`Categoria ${description} removida`, ToastAndroid.SHORT);
   };
 
-  const redirect = async ({ id }: Note) => {
-    router.push({ pathname: "note", params: { id } });
+  const redirect = async ({ id }: Category) => {
+    router.push({ pathname: "category", params: { id } });
   };
 
   useEffect(() => {
@@ -55,11 +55,11 @@ export default function Notes() {
     <FlatList
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
       style={styles.list}
-      data={notes}
-      renderItem={({ item: note, index }) => {
+      data={categories}
+      renderItem={({ item: category, index }) => {
         return (
           <TouchableOpacity
-            onPress={() => redirect(note)}
+            onPress={() => redirect(category)}
             style={{
               ...styles.row,
               ...styles.item,
@@ -67,14 +67,13 @@ export default function Notes() {
             }}
           >
             <View style={styles.row}>
-              <Icon name={note.category.icon} color={note.category.color} size={28} />
+              <Icon name={category.icon} color={category.color} size={28} />
               <View style={{ marginLeft: 10 }}>
-                <Text style={styles.title}>{note.title}</Text>
-                <Text>{note.text}</Text>
+                <Text style={styles.title}>{category.description}</Text>
               </View>
             </View>
-            <TouchableOpacity onPress={() => remove(note)}>
-              {deletingId === note.id ? (
+            <TouchableOpacity onPress={() => remove(category)}>
+              {deletingId === category.id ? (
                 <ActivityIndicator size={28} color="#ff7575" />
               ) : (
                 <Icon name="trash" size={28} color="#ff7575" />
