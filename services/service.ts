@@ -1,6 +1,7 @@
-import { API_URL } from "@env";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { API_URL } from "@env";
 import { Entity } from "../types/entity";
+import storage from "../storage/auth";
 
 function sleep(milliseconds: number) {
   return new Promise((resolve) => {
@@ -8,38 +9,54 @@ function sleep(milliseconds: number) {
   });
 }
 
-export default class Service<T extends Entity> {
-  private axios: AxiosInstance;
+export abstract class Service {
+  protected axios: AxiosInstance;
 
-  constructor(endpoint: string) {
+  constructor() {
     this.axios = axios.create({
-      baseURL: API_URL + "/" + endpoint,
-      timeout: 2000,
+      baseURL: API_URL,
     });
   }
+}
 
-  async get(id: string): Promise<AxiosResponse<T>> {
+const getHeaders = async () => {
+  const auth = await storage.read();
+  return auth ? { Authorization: `Bearer ${auth.token}` } : {};
+};
+
+export class CrudService<T extends Entity> extends Service {
+  constructor(endpoint: string) {
+    super();
+    this.axios.defaults.baseURL = API_URL + "/" + endpoint;
+  }
+
+  async get(id: number): Promise<AxiosResponse<T>> {
     await sleep(300);
-    return await this.axios.get(`/${id}`);
+    const headers = await getHeaders();
+    return await this.axios.get(`/${id}`, { headers });
   }
 
   async list(): Promise<AxiosResponse<T[]>> {
     await sleep(300);
-    return await this.axios.get("/");
+    const headers = await getHeaders();
+    return await this.axios.get("/", { headers });
   }
 
-  async delete(id: string): Promise<AxiosResponse<T>> {
+  async delete(id: number): Promise<AxiosResponse<T>> {
     await sleep(300);
-    return await this.axios.delete(`/${id}`);
+    const headers = await getHeaders();
+    return await this.axios.delete(`/${id}`, { headers });
   }
 
   async insert(entity: Omit<T, "id">): Promise<AxiosResponse<T>> {
     await sleep(300);
-    return await this.axios.post("/", entity);
+    const headers = await getHeaders();
+    return await this.axios.post("/", entity, { headers });
   }
 
   async update(entity: T): Promise<AxiosResponse<T>> {
     await sleep(300);
-    return await this.axios.put(`/${entity.id}`, entity);
+    const headers = await getHeaders();
+    return await this.axios.put(`/${entity.id}`, entity, { headers });
   }
 }

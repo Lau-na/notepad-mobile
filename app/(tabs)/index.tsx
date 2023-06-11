@@ -15,13 +15,16 @@ import service from "../../services/notes";
 import Icon from "../../components/Icon";
 import useToggleState from "../../hooks/useToggleState";
 import { usePathname, useRouter } from "expo-router";
+import { useTheme } from "@react-navigation/native";
 
 export default function Notes() {
   const pathname = usePathname();
   const router = useRouter();
   const [refreshing, toggleRefreshing] = useToggleState();
   const [notes, setNotes] = useState<Note[]>([]);
-  const [deletingId, setDeletingId] = useState<string>();
+  const [deletingId, setDeletingId] = useState<number>(0);
+
+  const theme = useTheme();
 
   const load = async () => {
     toggleRefreshing();
@@ -63,14 +66,14 @@ export default function Notes() {
             style={{
               ...styles.row,
               ...styles.item,
-              backgroundColor: index % 2 === 0 ? "white" : "#ebebeb",
+              backgroundColor: index % 2 === 0 ? theme.colors.background : theme.colors.card,
             }}
           >
             <View style={styles.row}>
-              <Icon name={note.category.icon} color={note.category.color} size={28} />
-              <View style={{ marginLeft: 10 }}>
-                <Text style={styles.title}>{note.title}</Text>
-                <Text>{note.text}</Text>
+              <Icon name={note.category!.icon} color={note.category!.color} size={28} />
+              <View style={{ marginHorizontal: 10, flexShrink: 1 }}>
+                <Text style={{ ...styles.title, color: theme.colors.text }}>{note.title}</Text>
+                <Text style={{ color: theme.colors.text }}>{note.text}</Text>
               </View>
             </View>
             <TouchableOpacity onPress={() => remove(note)}>
@@ -86,7 +89,6 @@ export default function Notes() {
     />
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -105,6 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    flexShrink: 1,
   },
   title: {
     fontWeight: "bold",

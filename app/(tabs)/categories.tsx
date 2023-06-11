@@ -15,13 +15,15 @@ import service from "../../services/categories";
 import Icon from "../../components/Icon";
 import useToggleState from "../../hooks/useToggleState";
 import { usePathname, useRouter } from "expo-router";
+import { useTheme } from "@react-navigation/native";
 
 export default function Categories() {
+  const theme = useTheme();
   const pathname = usePathname();
   const router = useRouter();
   const [refreshing, toggleRefreshing] = useToggleState();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [deletingId, setDeletingId] = useState<string>();
+  const [deletingId, setDeletingId] = useState<number>();
 
   const load = async () => {
     toggleRefreshing();
@@ -63,13 +65,13 @@ export default function Categories() {
             style={{
               ...styles.row,
               ...styles.item,
-              backgroundColor: index % 2 === 0 ? "white" : "#ebebeb",
+              backgroundColor: index % 2 === 0 ? theme.colors.background : theme.colors.card,
             }}
           >
             <View style={styles.row}>
               <Icon name={category.icon} color={category.color} size={28} />
               <View style={{ marginLeft: 10 }}>
-                <Text style={styles.title}>{category.description}</Text>
+                <Text style={{ ...styles.title, color: theme.colors.text }}>{category.description}</Text>
               </View>
             </View>
             <TouchableOpacity onPress={() => remove(category)}>

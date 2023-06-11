@@ -16,11 +16,12 @@ export default function Note() {
   const theme = useTheme();
   const router = useRouter();
 
-  const { id } = useSearchParams<SearchParams>();
+  const params = useSearchParams<SearchParams>();
+  const id = params.id ? parseInt(params.id) : 0;
 
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState(0);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, toggleLoading] = useToggleState();
   const [saving, toggleSaving] = useToggleState();
@@ -28,14 +29,7 @@ export default function Note() {
   const save = async () => {
     toggleSaving();
 
-    const category = categories.find(({ id }) => id === categoryId);
-
-    if (!category) {
-      ToastAndroid.show("Ocorreu um erro ao salvar", ToastAndroid.SHORT);
-      return;
-    }
-
-    const note = { title, text, category, date: new Date() };
+    const note = { title, text, categoryId, date: new Date() };
 
     if (id) {
       await noteService.update({ id, ...note });
@@ -49,11 +43,12 @@ export default function Note() {
   };
 
   const load = async () => {
-    const response = await noteService.get(id!);
+    const response = await noteService.get(id);
     const note = response.data;
+    console.log("Note: " + JSON.stringify(response.data));
     setTitle(note.title);
     setText(note.text);
-    setCategoryId(note.category.id);
+    setCategoryId(note.categoryId);
   };
 
   const loadCategories = async () => {

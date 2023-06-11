@@ -16,7 +16,8 @@ export default function Category() {
   const theme = useTheme();
   const router = useRouter();
 
-  const { id } = useSearchParams<SearchParams>();
+  const params = useSearchParams<SearchParams>();
+  const id = params.id ? parseInt(params.id) : 0;
 
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("" as IconName);

@@ -6,6 +6,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Octicons from "@expo/vector-icons/Octicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export const icons = [
   { name: "alarm", description: "Alarme" },
@@ -24,6 +25,7 @@ export const icons = [
   { name: "book", description: "Livro" },
   { name: "palette", description: "Paleta" },
   { name: "plus", description: "Sinal de adição" },
+  { name: "logout", description: "Saida" },
 ];
 
 type ComponentProps = Omit<IconProps, "name">;
@@ -49,6 +51,7 @@ const components = {
   book: ({ size, color }: ComponentProps) => <FontAwesome name="book" size={size} color={color} />,
   palette: ({ size, color }: ComponentProps) => <FontAwesome5 name="palette" size={size} color={color} />,
   plus: ({ size, color }: ComponentProps) => <FontAwesome5 name="plus" size={size} color={color} />,
+  logout: ({ size, color }: ComponentProps) => <MaterialIcons name="logout" size={size} color={color} />,
 };
 
 export type IconName = keyof typeof components;

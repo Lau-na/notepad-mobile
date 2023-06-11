@@ -1,6 +1,10 @@
 import { Link, Tabs } from "expo-router";
 import Colors from "../../constants/Colors";
 import Icon from "../../components/Icon";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import storage from "../../storage/auth";
+import { useContext } from "react";
+import AuthContext from "../../contexts/auth";
 
 export default function TabLayout() {
   return (
@@ -14,7 +18,12 @@ export default function TabLayout() {
         options={{
           title: "Anotações",
           tabBarIcon: ({ color }) => <Icon name="book" color={color} size={28} />,
-          headerRight: () => <Add href="/note" />,
+          headerRight: () => (
+            <View style={styles.buttons}>
+              <Add href="/note" />
+              <Logout />
+            </View>
+          ),
         }}
       />
       <Tabs.Screen
@@ -40,3 +49,25 @@ const Add = ({ href }: AddProps) => {
     </Link>
   );
 };
+
+const Logout = () => {
+  const { setAuth } = useContext(AuthContext);
+
+  const logout = async () => {
+    await storage.clear();
+    setAuth(null);
+  };
+
+  return (
+    <TouchableOpacity onPress={logout} style={{ marginRight: 20 }}>
+      <Icon name="logout" color={Colors.light.tint} size={28} />
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+});

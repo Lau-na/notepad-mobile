@@ -1,4 +1,4 @@
 import { Note } from "../types/note";
-import Service from "./service";
+import { CrudService } from "./service";
 
-export default new Service<Note>("notes");
+export default new CrudService<Note>("notes");

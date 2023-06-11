@@ -1,9 +1,10 @@
-import { Entity } from "./entity";
 import { Category } from "./category";
+import { Entity } from "./entity";
 
 export interface Note extends Entity {
   title: string;
   text: string;
   date: Date;
-  category: Category;
+  categoryId: number;
+  category?: Category;
 }

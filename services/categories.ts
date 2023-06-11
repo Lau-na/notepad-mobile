@@ -1,4 +1,4 @@
 import { Category } from "../types/category";
-import Service from "./service";
+import { CrudService } from "./service";
 
-export default new Service<Category>("categories");
+export default new CrudService<Category>("categories");
